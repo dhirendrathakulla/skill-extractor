@@ -73,5 +73,7 @@ excluded_words = [
     "feel", "felt",
     "try", "tried",
     "leave", "left",
-    "call", "called"
+    "call", "called",
+'self','no gaps','attention','full stops','Our mission','no summarizing','Ideal candidates','Our web products','your original text','existing code bases','normal sentence format','Our small team','stops','bases','text','gaps','our vision','summarizing','personable','format','text','sentence'
+    
 ]
