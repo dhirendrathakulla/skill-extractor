@@ -1,0 +1,2 @@
+sudo docker build -t ner-api .
+sudo docker run -p 8010:8010 ner-api
