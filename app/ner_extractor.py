@@ -3,8 +3,6 @@ from config import NER_MODEL
 def extract_skills_ner(text: str):
     entities = NER_MODEL(text)
     skills = []
-    print("Entities output:", entities)
-
     for ent in entities:
         entity_group = ent.get("entity_group", "").upper()
         if entity_group in {"HSKILL", "SSKILL"}:  # accept both
