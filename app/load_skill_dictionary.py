@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 from utils import normalize_skill  # <-- import from your common utils
 
-from data.conanical_words import canonical_map
+from config import CANONICAL_DATA_MAP
 
 
 def expand_skill_variants(skill):
@@ -16,8 +16,8 @@ def expand_skill_variants(skill):
     variants.add(norm)
 
     # If skill has a canonical form, add it
-    if norm in canonical_map:
-        variants.add(canonical_map[norm])
+    if norm in CANONICAL_DATA_MAP:
+        variants.add(CANONICAL_DATA_MAP[norm])
 
     # Add acronym from parentheses (e.g., EC2)
     match = re.search(r"\(([^)]+)\)", skill)

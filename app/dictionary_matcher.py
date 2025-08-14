@@ -3,7 +3,8 @@ from load_skill_dictionary import load_skill_dictionary
 from rapidfuzz import fuzz
 from utils import normalize_skill  # ensure same normalization everywhere
 
-from data.conanical_words import canonical_map
+from config import CANONICAL_DATA_MAP
+
 
 SKILL_DICTIONARY = load_skill_dictionary()
 
@@ -12,7 +13,7 @@ def match_skills_dictionary(text: str, threshold=85):
     Match skills from SKILL_DICTIONARY in the given text.
     - Single-word skills: exact match only
     - Multi-word skills: exact + fuzzy match
-    - Applies canonical_map to unify synonyms
+    - Applies CANONICAL_DATA_MAP to unify synonyms
     """
     text_lower = text.lower()
     matches_normalized = set()
@@ -44,8 +45,8 @@ def match_skills_dictionary(text: str, threshold=85):
     # --- Apply canonical mapping ---
     final_skills = set()
     for skill in matches_normalized:
-        if skill in canonical_map:
-            final_skills.add(canonical_map[skill])
+        if skill in CANONICAL_DATA_MAP:
+            final_skills.add(CANONICAL_DATA_MAP[skill])
         else:
             final_skills.add(skill)
 
