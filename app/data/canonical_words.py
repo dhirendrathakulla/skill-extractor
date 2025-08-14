@@ -519,4 +519,13 @@ canonical_map = {
 
     # Elixir ORMs
     'ecto': 'ecto',
+
+     # Full stack variations
+    "fullstack": "full stack",
+    "full-stack": "full stack",
+    "full stack": "full stack",
+    "fullstackdeveloper": "full stack",
+    "fullstack developer": "full stack",
+    "full stack developer": "full stack",
+    "full-stack developer": "full stack",
 }
