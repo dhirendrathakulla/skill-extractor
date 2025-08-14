@@ -1,44 +1,37 @@
+import re
 from load_skill_dictionary import load_skill_dictionary
 from rapidfuzz import fuzz
 import pprint
 
-SKILL_DICTIONARY = load_skill_dictionary()  # {normalized: original}
-
-print("DEBUG: SKILL_DICTIONARY type ->", type(SKILL_DICTIONARY))
-try:
-    print("DEBUG: length ->", len(SKILL_DICTIONARY))
-except Exception as e:
-    print("DEBUG: len() error ->", e)
-
-if isinstance(SKILL_DICTIONARY, dict):
-    print("DEBUG: sample items (first 20):")
-    pprint.pprint(list(SKILL_DICTIONARY.items())[:20])
-else:
-    print("DEBUG: not a dict, sample:")
-    pprint.pprint(SKILL_DICTIONARY[:20])
-
-
+SKILL_DICTIONARY = load_skill_dictionary()
 
 def match_skills_dictionary(text: str, threshold=85):
+    """
+    Match skills from SKILL_DICTIONARY in the given text.
+    Returns a sorted list of matched skills (normalized lowercase).
+    """
     text_lower = text.lower()
-    matches = set()
-    # Exact substring match
+    matches_normalized = set()
+
+    # Exact match using word boundaries
     exact_matched_norms = set()
-    for norm, original in SKILL_DICTIONARY.items():
-        if len(norm) < 2:
-            continue  # skip short normalized keys
-        if norm in text_lower:
-            matches.add(original)
-            exact_matched_norms.add(norm)
-
-    # Fuzzy match for those not matched exactly
-    for norm, original in SKILL_DICTIONARY.items():
-        if len(norm) < 2:
-            continue  # skip short normalized keys
-        if norm in exact_matched_norms:
+    for norm, _ in SKILL_DICTIONARY.items():
+        norm_clean = norm.strip().lower()
+        if len(norm_clean) < 2:
             continue
-        score = fuzz.partial_ratio(norm, text_lower)
-        if score >= threshold:
-            matches.add(original)
+        if re.search(rf"\b{re.escape(norm_clean)}\b", text_lower):
+            matches_normalized.add(norm_clean)
+            exact_matched_norms.add(norm_clean)
 
-    return sorted(matches)
+    # Fuzzy match for skills not matched exactly
+    for norm, _ in SKILL_DICTIONARY.items():
+        norm_clean = norm.strip().lower()
+        if len(norm_clean) < 2:
+            continue
+        if norm_clean in exact_matched_norms:
+            continue
+        score = fuzz.partial_ratio(norm_clean, text_lower)
+        if score >= threshold:
+            matches_normalized.add(norm_clean)
+
+    return sorted(matches_normalized)

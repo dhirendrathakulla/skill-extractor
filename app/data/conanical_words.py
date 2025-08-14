@@ -65,6 +65,7 @@ canonical_map = {
     'mongo': 'mongodb',
     'mongo db': 'mongodb',
     'mongo-db': 'mongodb',
+   ' mongodb atlas': 'mongodb',
     'cassandra': 'cassandra',
     'redis': 'redis',
     'dynamodb': 'dynamodb',
@@ -290,10 +291,29 @@ canonical_map = {
 
     # API / Protocols
     'grpc': 'grpc',
+    'g rpc': 'grpc',
+    'g-rpc': 'grpc',
+
     'graphql': 'graphql',
+    'graph ql': 'graphql',
+    'graph-ql': 'graphql',
+
     'rest': 'rest',
+    'restapi': 'rest',
+    'rest api': 'rest',
+    'rest-api': 'rest',
+    'restfull': 'rest',       # common misspelling
+    'restful': 'rest',
+
     'soap': 'soap',
+    's oap': 'soap',
+
     'websocket': 'websocket',
+    'web socket': 'websocket',
+    'web-socket': 'websocket',
+    'websockets': 'websocket',
+    'web sockets': 'websocket',
+    'web-sockets': 'websocket',
 
     # Additional
     'apachebeam': 'apache beam',

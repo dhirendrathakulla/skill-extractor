@@ -19,8 +19,9 @@ def extract_filtered_noun_chunks(text):
             and phrase_lower not in excluded_words_set
             and phrase_lower not in nlp.Defaults.stop_words
         ):
-            spacy_phrases.add(phrase)
+            spacy_phrases.add(phrase_lower)  # store lowercase
     return list(spacy_phrases)
+
 
 
 
