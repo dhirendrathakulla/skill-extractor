@@ -143,13 +143,65 @@ canonical_map = {
     'docker': 'docker',
     'kubernetes': 'kubernetes',
     'k8s': 'kubernetes',
-    'aws': 'aws',
-    'amazonwebservices': 'aws',
+    
+      # Amazon DynamoDB
+    'amazon dynamodb': 'dynamodb',
+    'dynamodb': 'dynamodb',
+
+    # Amazon Elastic Compute Cloud EC2
+    'amazon elastic compute cloud ec2': 'ec2',
+    'elastic compute cloud': 'ec2',
+    'amazon ec2': 'ec2',
+    'ec2': 'ec2',
+
+    # Amazon Redshift
+    'amazon redshift': 'redshift',
+    'redshift': 'redshift',
+
+    # Amazon Web Services AWS software
+    'amazon web services aws software': 'aws',
     'amazon web services': 'aws',
+    'aws software': 'aws',
+    'amazonwebservices': 'aws',
+    'aws': 'aws',
+    'amazon web service': 'aws',
+     'amazon s3': 's3',
+    's3': 's3',
+    'amazon cloudfront': 'cloudfront',
+    'cloudfront': 'cloudfront',
+    'amazon lambda': 'aws lambda',
+    'lambda': 'aws lambda',
+    'amazon rds': 'rds',
+    'rds': 'rds',
+    'amazon vpc': 'vpc',
+    'vpc': 'vpc',
+    'eks': 'eks',
+    'elastic kubernetes service': 'eks',
+# Azure
+    'azure cloud': 'azure',
+    'microsoft azure': 'azure',
+    'azure': 'azure',
+    'azure vm': 'azure vm',
+    'azure functions': 'azure functions',
+    'azure storage': 'azure storage',
+
+    # Google Cloud
+    'google cloud': 'gcp',
+    'google cloud platform': 'gcp',
+    'gcp': 'gcp',
+    'google compute engine': 'gce',
+    'gce': 'gce',
+    'google kubernetes engine': 'gke',
+    'gke': 'gke',
     'azure': 'azure',
     'googlecloudplatform': 'gcp',
-    'gcp': 'gcp',
-    'google cloud platform': 'gcp',
+    
+    'openstack': 'openstack',
+    'digitalocean': 'digitalocean',
+    'linode': 'linode',
+    'oracle cloud': 'oracle cloud',
+    'ibm cloud': 'ibm cloud',
+    'vmware cloud': 'vmware cloud',
     'terraform': 'terraform',
     'ansible': 'ansible',
     'chef': 'chef',
@@ -270,6 +322,7 @@ canonical_map = {
     'prometheus': 'prometheus',
     'grafana': 'grafana',
     'cloudwatch': 'cloudwatch',
+    'cloud': 'cloud infrastructure',
     'elasticstack': 'elastic stack',
     'elastic stack': 'elastic stack',
 
@@ -330,6 +383,14 @@ canonical_map = {
     # Cloudformation and Infrastructure as Code
     'cloudformation': 'cloudformation',
     'pulumi': 'pulumi',
+      # General cloud terms
+    'cloud': 'cloud infrastructure',
+    'cloud computing': 'cloud infrastructure',
+    'cloud platform': 'cloud infrastructure',
+    'cloud services': 'cloud infrastructure',
+    'cloud solutions': 'cloud infrastructure',
+    'multi cloud': 'multi-cloud',
+    'hybrid cloud': 'hybrid cloud',
 
     # Misc common skills
     'oauth': 'oauth',

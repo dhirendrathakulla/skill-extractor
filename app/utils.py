@@ -6,8 +6,12 @@ def clean_text(text: str) -> str:
 
 
 def normalize_skill(skill):
+    """Lowercase, strip, remove extra spaces & non-alphanumeric edges."""
+    if not isinstance(skill, str):
+        return None
     skill = skill.lower()
-    skill = re.sub(r'[\.\-\s]+', '', skill)  # remove dots, dashes, spaces
+    skill = re.sub(r'\s+', ' ', skill).strip()
+    skill = re.sub(r'^[^a-z0-9]+|[^a-z0-9]+$', '', skill)
     return skill
 
 def deduplicate(skills):

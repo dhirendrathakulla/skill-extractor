@@ -1,15 +1,36 @@
 import pandas as pd
 import re
 from pathlib import Path
+from utils import normalize_skill  # <-- import from your common utils
 
-def normalize_skill(skill):
-    """Lowercase, strip, remove extra spaces & non-alphanumeric edges."""
-    if not isinstance(skill, str):
-        return None
-    skill = skill.lower()
-    skill = re.sub(r'\s+', ' ', skill).strip()
-    skill = re.sub(r'^[^a-z0-9]+|[^a-z0-9]+$', '', skill)
-    return skill
+from data.conanical_words import canonical_map
+
+
+def expand_skill_variants(skill):
+    """Generate normalized variants for better matching."""
+    variants = set()
+    norm = normalize_skill(skill)
+    if not norm:
+        return variants
+
+    variants.add(norm)
+
+    # If skill has a canonical form, add it
+    if norm in canonical_map:
+        variants.add(canonical_map[norm])
+
+    # Add acronym from parentheses (e.g., EC2)
+    match = re.search(r"\(([^)]+)\)", skill)
+    if match:
+        variants.add(normalize_skill(match.group(1)))
+
+    # Remove vendor prefix like 'Amazon', 'Microsoft'
+    if ' ' in norm:
+        words = norm.split()
+        if words[0] in ['amazon', 'microsoft', 'google', 'ibm']:
+            variants.add(' '.join(words[1:]))
+
+    return {v for v in variants if v}
 
 def load_skill_dictionary():
     """Load skills from O*NET skills.xlsx and tech_skills.xlsx in /data."""
@@ -31,8 +52,8 @@ def load_skill_dictionary():
             raise ValueError(f"Expected column '{col_name}' not found in {file}")
 
         for val in df[col_name].dropna():
-            norm = normalize_skill(val)
-            if norm and norm not in all_skills:
-                all_skills[norm] = val  # normalized → original
+            for variant in expand_skill_variants(val):
+                if variant not in all_skills:
+                    all_skills[variant] = val  # variant → original
 
     return all_skills  # keep as dict for .items() use
