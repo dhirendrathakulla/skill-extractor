@@ -528,4 +528,5 @@ canonical_map = {
     "fullstack developer": "full stack",
     "full stack developer": "full stack",
     "full-stack developer": "full stack",
+   ' full-stack development': "full stack",
 }
