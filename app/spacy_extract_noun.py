@@ -2,44 +2,30 @@ import re
 import spacy
 from data.excluded_words import excluded_words  # your custom list
 
-# --- Load SpaCy model ---
 nlp = spacy.load("en_core_web_sm")
 excluded_words_set = set(word.lower() for word in excluded_words)
 
-# --- Regex patterns ---
-# Case 1: "X years ... experience" (loose gap allowed)
-YEARS_BEFORE_EXP = re.compile(
-    r"\b\d+\s*\+?\s*(?:years?|yrs?|yr)\b(?:\s+\w+){0,6}?\s*\b(?:experience|exp|exper|experienced)\b",
-    re.IGNORECASE
+# --- Patterns ---
+YEARS_PATTERN = re.compile(r"\b(\d+)\s*\+?\s*(?:years?|yrs?|yr)\b", re.IGNORECASE)
+
+EXPERIENCE_YEARS_BEFORE = re.compile(
+    r"\b(\d+)\s*(?:\+|plus)?\s*(?:years?|yrs?|yr)"
+    r"(?:\s+of\b.*?)?\b(?:experience|exp|exper|experienced)\b",
+    re.IGNORECASE | re.DOTALL,
 )
 
-# Case 2: "experience/experienced ... X years" or "experienced X years"
-EXP_BEFORE_YEARS = re.compile(
-    r"\b(?:experience|exp|exper|experienced)\b(?:\s+\w+){0,6}?\s*\b\d+\s*\+?\s*(?:years?|yrs?|yr)\b",
-    re.IGNORECASE
+EXPERIENCE_EXP_BEFORE = re.compile(
+    r"\b(?:experience|exp|exper|experienced)\b.*?\b(\d+)\s*(?:\+|plus)?\s*(?:years?|yrs?|yr)\b",
+    re.IGNORECASE | re.DOTALL,
 )
 
-# Case 3: Plain "X years" (only for experience)
-YEARS_ONLY = re.compile(
-    r"\b\d+\s*\+?\s*(?:years?|yrs?|yr)\b",
-    re.IGNORECASE
+YEAR_ONLY_FULL = re.compile(
+    r"^\s*\d+\s*(?:\+|plus)?\s*(?:years?|yrs?|yr)\s*$",
+    re.IGNORECASE,
 )
-
-# --- Strict patterns for numeric extraction ---
-STRICT_ANY = re.compile(r"(\d+)", re.IGNORECASE)
 
 def _norm_spaces(s: str) -> str:
     return re.sub(r"\s+", " ", s.strip().lower())
-
-def _extract_year_number(phrase: str):
-    """Extract the first integer found in phrase."""
-    m = STRICT_ANY.search(phrase)
-    if m:
-        try:
-            return int(m.group(1))
-        except Exception:
-            return None
-    return None
 
 def extract_filtered_noun_chunks_and_experience(text: str):
     if not isinstance(text, str):
@@ -49,37 +35,46 @@ def extract_filtered_noun_chunks_and_experience(text: str):
     results = set()
     exp_numbers = set()
 
-    # --- 1) Find all experience patterns ---
-    for raw_line in text.splitlines():
-        line = raw_line.lower()
+    # --- 1) Match explicit experience patterns anywhere in text ---
+    for m in EXPERIENCE_YEARS_BEFORE.finditer(text):
+        try:
+            num = int(m.group(1))
+        except Exception:
+            continue
+        if num not in exp_numbers:
+            results.add(f"experience {num}")
+            exp_numbers.add(num)
 
-        matches = []
-        matches.extend(YEARS_BEFORE_EXP.findall(line))
-        matches.extend(EXP_BEFORE_YEARS.findall(line))
+    for m in EXPERIENCE_EXP_BEFORE.finditer(text):
+        try:
+            num = int(m.group(1))
+        except Exception:
+            continue
+        if num not in exp_numbers:
+            results.add(f"experience {num}")
+            exp_numbers.add(num)
 
-        if matches:
-            for phrase in matches:
-                num = _extract_year_number(phrase)
-                if num is not None and num not in exp_numbers:
-                    results.add(f"experience:{num}")
-                    exp_numbers.add(num)
-        else:
-            # If no explicit experience match, fallback to plain years
-            for phrase in YEARS_ONLY.findall(line):
-                num = _extract_year_number(phrase)
-                if num is not None and num not in exp_numbers:
-                    results.add(f"experience:{num}")
-                    exp_numbers.add(num)
+    # --- 2) Fallback: plain years (only if no matching experience phrase) ---
+    for m in YEARS_PATTERN.finditer(text):
+        try:
+            num = int(m.group(1))
+        except Exception:
+            continue
+        if num not in exp_numbers:
+            results.add(f"experience {num}")
+            exp_numbers.add(num)
 
-    # --- 2) Noun-chunk extraction ---
+    # --- 3) Noun-chunk extraction ---
     for chunk in doc.noun_chunks:
-        phrase = chunk.text
-        phrase_lower = _norm_spaces(phrase)
-        if (
-            1 <= len(phrase_lower.split()) <= 2
-            and phrase_lower not in excluded_words_set
-            and phrase_lower not in nlp.Defaults.stop_words
-        ):
-            results.add(phrase_lower)
+        phrase_lower = _norm_spaces(chunk.text)
+        if phrase_lower in nlp.Defaults.stop_words or phrase_lower in excluded_words_set:
+            continue
+        if not (1 <= len(phrase_lower.split()) <= 2):
+            continue
+        if YEAR_ONLY_FULL.match(phrase_lower):
+            continue
+        results.add(phrase_lower)
 
-    return list(results)
+    # --- 4) Final cleanup ---
+    final_list = [s for s in results if not YEAR_ONLY_FULL.match(s)]
+    return final_list
