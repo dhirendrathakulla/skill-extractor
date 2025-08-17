@@ -2,7 +2,9 @@ import re
 from data.role_suffixes import role_suffixes
 from load_skill_dictionary import load_skill_dictionary
 from config import CANONICAL_DATA_MAP
+from data.excluded_words import excluded_words  # Your custom exclusion list
 
+excluded_words_set = set(word.lower() for word in excluded_words)
 SKILL_DICTIONARY = load_skill_dictionary()
 
 def normalize_skill(skill):
@@ -17,6 +19,10 @@ def normalize_skill(skill):
     # Remove punctuation but keep spaces for display
     clean_value = re.sub(r'[^\w\s-]', '', display_value)  # keep hyphen
     clean_value = re.sub(r'\s+', ' ', clean_value).strip()
+
+    # Skip excluded words early (NEW: Early filtering)
+    if clean_value in excluded_words_set:
+        return None, None
 
     # Suffix stripping (only if base is known and >= 3 chars)
     words = clean_value.split()
@@ -53,6 +59,14 @@ def merge_and_deduplicate(*skill_lists):
     
     for skills in skill_lists:
         for skill in skills:
+            if not isinstance(skill, str):
+                continue
+                
+            # NEW: Skip excluded words before normalization
+            skill_lower = skill.strip().lower()
+            if skill_lower in excluded_words_set:
+                continue
+                
             match_key, display_value = normalize_skill(skill)
             if match_key and match_key not in seen:
                 seen.add(match_key)

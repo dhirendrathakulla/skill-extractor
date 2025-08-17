@@ -531,5 +531,13 @@ canonical_map = {
     "full stack developer": "full stack",
     "full-stack developer": "full stack",
    ' full-stack development': "full stack",
-   ' full stack development': "full stack",
+
+
+    'designing': "design",
+   'designing': "design",
+   'designer': "design",
+   'backend-heavy 75': "backend",
+   'backend-heavy': "backend",
+   'backend-focused': "backend",
+   'backend': "backend",
 }

@@ -18,8 +18,8 @@ async def extract_skills_endpoint(request: Request):
         logger.info(f"Received text: {text[:100]}...")  # Log first 100 chars
 
         ner_skills = extract_skills_ner(text)
-        dict_skills = match_skills_dictionary(text)
-        spacy_skills = extract_filtered_noun_chunks_and_experience(text)
+        dict_skills = match_skills_dictionary(text, ner_skills)
+        spacy_skills = extract_filtered_noun_chunks_and_experience(text,ner_skills + dict_skills)
 
         logger.info(f"Ner skills: {ner_skills}")
         logger.info(f"Dict skills: {dict_skills}")
