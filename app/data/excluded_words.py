@@ -77,6 +77,6 @@ excluded_words = [
 'self','no gaps','attention','full stops','Our mission','no summarizing','Ideal candidates','Our web products','your original text','existing code bases','normal sentence format','Our small team','stops','bases','text','gaps','our vision','summarizing','personable','format','text','sentence','a passion','building','applications','experience','require','required','s degree','strong background','performance',
  'edge', 'works', 'forms',  'web', 'net', 'box', 'word',
     'windows', 'office', 'spring', 'terminal', 'vision',
-    'agent', 'power', 'light', 'field', 'flow', 'hub', 'gate', 'sense'
+    'agent', 'power', 'light', 'field', 'flow', 'hub', 'gate', 'sense','service','services'
     
 ]
